@@ -36,7 +36,8 @@ features=st.container()
 features1=st.container()
 features2=st.container()
 features3=st.container()
-model_training=st.container()
+modelo=st.container()
+modelo_neurona=st.container()
 
 with header:
   st.title("Welcome to the predictions lab")
@@ -171,144 +172,147 @@ optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.001)
 # metrics=['mae']
 #  )
 
+with modelo:
+   st.header("Arquitectura del modelo")
 
-st.header("Arquitectura del modelo")
-model.summary(print_fn=st.text)
-st.text("voy a tener 64 conexiones por cada variables de las 12 que hay 832=12x64+64 que son los sesgos, eso en la primera capa")
-st.text("la capa dropout desactivan algunas conexiones aleatoriamente para generalizar mejor, y tenemos 0 es un parametro que no aprende ningún valor")
-st.text("las demas capas son un 64x64+ el sesgo que es 64., que es uno por cada neurona")
-st.text("la última capa es 65 porque e suna sola neurona de 64 variables más sus sesgo, MxN+Sesgo")
+   sel_col1, disp_col1 = st.columns(2)  
+   with sel_col1: 
+      model.summary(print_fn=st.text)
+      st.text("voy a tener 64 conexiones por cada variables de las 12 que hay 832=12x64+64 que son los sesgos, eso en la primera capa")
+      st.text("la capa dropout desactivan algunas conexiones aleatoriamente para generalizar mejor, y tenemos 0 es un parametro que no aprende ningún valor")
+      st.text("las demas capas son un 64x64+ el sesgo que es 64., que es uno por cada neurona")
+      st.text("la última capa es 65 porque e suna sola neurona de 64 variables más sus sesgo, MxN+Sesgo")
 
+   with disp_col1:
+      img1 = Image.open('Prediccion_y_labels.jpg')
+      st.image(img1,width=800, channels='RGB',caption=None)
 
-with model_training:
-  st.header("Training the model")
-  st.text("let see the prediccions by week")
 
 
 
 new_model = keras.models.load_model('path_to_my_model.h5')
 history = pickle.load(open('training_history','rb'))    
 
-sel_col, disp_col = st.columns(2)
 
-with sel_col:
-  def variables():
-      Week_number = st.slider('Week number',1,53)
-      month = st.slider('month', 1,12)
-      year = st.slider('year',2015,2022)
-      Season = st.selectbox('Season',('Winter','Spring',"Summer","Autumn"))
-      Attendance_de_la_semana_anterior_en_emergencias = st.slider('Attendance de la semana anterior en emergencias',0,11000)
-      Attendance_de_hace_2_semanas_en_emergencias = st.slider('Attendance de hace 2 semanas en emergencias',0,11000)
+
+with modelo_neurona:
+   st.header("Seleccionemos las variables para predecir el attendance:")
+   with st.form('Form1'):
+         Week_number = st.slider('Week number',1,53)
+         month = st.slider('month', 1,12)
+         year = st.slider('year',2015,2022)
+         Season = st.selectbox('Season',('Winter','Spring',"Summer","Autumn"))
+         Attendance_de_la_semana_anterior_en_emergencias = st.slider('Attendance de la semana anterior en emergencias',0,11000)
+         Attendance_de_hace_2_semanas_en_emergencias = st.slider('Attendance de hace 2 semanas en emergencias',0,11000)
+         
+         if Season == 'Winter':
+            Season = 0
+         if Season == "Spring":
+            Season = 1
+         if Season == "Summer":
+            Season = 2
+         if Season == "Autumn":
+            Season = 3
+
+         #return [Week_number,month,year,Season,Attendance_de_la_semana_anterior_en_emergencias,Attendance_de_hace_2_semanas_en_emergencias]
+   
+         Attendance_de_hace_3_semanas_en_emergencias = st.slider('Attendance de hace 3 semanas en emergencias',0,11000)
+         Semana_con_fecha_de_fin_de_mes = st.slider("Semana con fecha de fin de mes",0,1)
+         Semana_con_holidays = st.slider("Semana con holidays",0,1)
+         Año_de_fundación = st.slider("Año de fundación",1729,2017)
+         Beds = st.slider("Beds",34,13000)
+         Number_location = st.selectbox("Number_location",('Aberdeen Royal Infirmary', 'Balfour Hospital', 'Belford Hospital','Borders General Hospital', 'Caithness General Hospital',"Dr Gray's Hospital", 'Dumfries & Galloway Royal Infirmary','Forth Valley Royal Hospital', 'Galloway Community Hospital','Gilbert Bain Hospital', 'Glasgow Royal Infirmary','Hairmyres Hospital', 'Inverclyde Royal Hospital','Lorn & Islands Hospital', 'Monklands District General Hospital','NHSScotland', 'Ninewells Hospital', 'Perth Royal Infirmary','Queen Elizabeth University Hospital', 'Raigmore Hospital',"Royal Aberdeen Children's Hospital", 'Royal Alexandra Hospital','Royal Hospital For Children','Royal Hospital For Sick Children (Edinburgh)','Royal Infirmary Of Edinburgh At Little France','Southern General Hospital', "St John's Hospital",'University Hospital Ayr', 'University Hospital Crosshouse','Victoria Hospital', 'Victoria Infirmary', 'Western Infirmary','Western Isles Hospital', 'Wishaw General Hospital'))
+
+         if Number_location == 'University Hospital Ayr':
+            Number_location = 1
+         if Number_location  == "University Hospital Crosshouse":
+            Number_location  = 2
+         if Number_location  == "Borders General Hospital	":
+            Number_location  = 3
+         if Number_location  == "Dumfries & Galloway Royal Infirmary":
+            Number_location  = 4
+         if Number_location  == "Galloway Community Hospital":
+            Number_location  = 5
+         if Number_location  == "Victoria Hospital":
+            Number_location  = 6
+         if Number_location  == "Forth Valley Royal Hospital":	
+            Number_location  = 7
+         if Number_location  == "Aberdeen Royal Infirmary":	
+            Number_location  = 8
+         if Number_location  == "Dr Gray's Hospital":	
+            Number_location  = 9
+         if Number_location  == "Royal Aberdeen Children's Hospital":	
+            Number_location  = 10
+         if Number_location  == "Glasgow Royal Infirmary":	
+            Number_location  = 11
+         if Number_location  == "Inverclyde Royal Hospital":	
+            Number_location  = 12
+         if Number_location  == "Royal Alexandra Hospital":	
+            Number_location  = 13
+         if Number_location  == "Royal Hospital For Children":	
+            Number_location  = 14
+         if Number_location  == "Southern General Hospital":	
+            Number_location  = 15
+         if Number_location  == "Victoria Infirmary":	
+            Number_location  = 16
+         if Number_location  == "Western Infirmary":	
+            Number_location  = 17
+         if Number_location  == "Belford Hospital":	
+            Number_location  = 18
+         if Number_location  == "Caithness General Hospital":	
+            Number_location  = 19
+         if Number_location  == "Lorn & Islands Hospital":	
+            Number_location  = 20
+         if Number_location  == "Raigmore Hospital":	
+            Number_location  = 21
+         if Number_location  == "Hairmyres Hospital":	
+            Number_location  = 22
+         if Number_location  == "Monklands District General Hospital":	
+            Number_location  = 23
+         if Number_location  == "Wishaw General Hospital":	
+            Number_location  = 24
+         if Number_location  == "Royal Hospital For Sick Children (Edinburgh)":	
+            Number_location  = 25
+         if Number_location  == "Royal Infirmary Of Edinburgh At Little France":	
+            Number_location  = 26
+         if Number_location  == "St John's Hospital":	
+            Number_location  = 27
+         if Number_location  == "Balfour Hospital":	
+            Number_location  = 28
+         if Number_location  == "Gilbert Bain Hospital":	
+            Number_location  = 29
+         if Number_location  == "Ninewells Hospital":	
+            Number_location  = 30
+         if Number_location  == "Perth Royal Infirmary":	
+            Number_location  = 31
+         if Number_location  == "Western Isles Hospital":	
+            Number_location  = 32
+         if Number_location  == "NHSScotland":	
+            Number_location  = 33
+         if Number_location  == "Queen Elizabeth University Hospital":	
+            Number_location  = 34
+
+         
+         vector= [Week_number,month,year,Season,Attendance_de_la_semana_anterior_en_emergencias,Attendance_de_hace_2_semanas_en_emergencias, Attendance_de_hace_3_semanas_en_emergencias,Semana_con_fecha_de_fin_de_mes,Semana_con_holidays,Año_de_fundación,Beds,Number_location]
       
-      if Season == 'Winter':
-          Season = 0
-      if Season == "Spring":
-          Season = 1
-      if Season == "Summer":
-          Season = 2
-      if Season == "Autumn":
-          Season = 3
-
-      return [Week_number,month,year,Season,Attendance_de_la_semana_anterior_en_emergencias,Attendance_de_hace_2_semanas_en_emergencias]
+         submitted= st.form_submit_button("Predicción")
+   #sum_attendance_emergency = tf.constant([variables()+variables1()])
+   
+   if submitted:
+      #si he rellenado el formulario ejecuta lo de lineas abajo
+      sum_attendance_emergency = tf.constant([vector])
+      prediction = model.predict(sum_attendance_emergency, steps=1)
+      pred = [round(x[0]) for x in prediction]
 
 
-with disp_col:
-  def variables1():      
-      Attendance_de_hace_3_semanas_en_emergencias = st.slider('Attendance de hace 3 semanas en emergencias',0,11000)
-      Semana_con_fecha_de_fin_de_mes = st.slider("Semana con fecha de fin de mes",0,1)
-      Semana_con_holidays = st.slider("Semana con holidays",0,1)
-      Año_de_fundación = st.slider("Año de fundación",1729,2017)
-      Beds = st.slider("Beds",34,13000)
-      Number_location = st.selectbox("Number_location",('Aberdeen Royal Infirmary', 'Balfour Hospital', 'Belford Hospital','Borders General Hospital', 'Caithness General Hospital',"Dr Gray's Hospital", 'Dumfries & Galloway Royal Infirmary','Forth Valley Royal Hospital', 'Galloway Community Hospital','Gilbert Bain Hospital', 'Glasgow Royal Infirmary','Hairmyres Hospital', 'Inverclyde Royal Hospital','Lorn & Islands Hospital', 'Monklands District General Hospital','NHSScotland', 'Ninewells Hospital', 'Perth Royal Infirmary','Queen Elizabeth University Hospital', 'Raigmore Hospital',"Royal Aberdeen Children's Hospital", 'Royal Alexandra Hospital','Royal Hospital For Children','Royal Hospital For Sick Children (Edinburgh)','Royal Infirmary Of Edinburgh At Little France','Southern General Hospital', "St John's Hospital",'University Hospital Ayr', 'University Hospital Crosshouse','Victoria Hospital', 'Victoria Infirmary', 'Western Infirmary','Western Isles Hospital', 'Wishaw General Hospital'))
 
-      if Number_location == 'University Hospital Ayr':
-          Number_location = 1
-      if Number_location  == "University Hospital Crosshouse":
-          Number_location  = 2
-      if Number_location  == "Borders General Hospital	":
-          Number_location  = 3
-      if Number_location  == "Dumfries & Galloway Royal Infirmary":
-          Number_location  = 4
-      if Number_location  == "Galloway Community Hospital":
-          Number_location  = 5
-      if Number_location  == "Victoria Hospital":
-         Number_location  = 6
-      if Number_location  == "Forth Valley Royal Hospital":	
-         Number_location  = 7
-      if Number_location  == "Aberdeen Royal Infirmary":	
-         Number_location  = 8
-      if Number_location  == "Dr Gray's Hospital":	
-         Number_location  = 9
-      if Number_location  == "Royal Aberdeen Children's Hospital":	
-         Number_location  = 10
-      if Number_location  == "Glasgow Royal Infirmary":	
-         Number_location  = 11
-      if Number_location  == "Inverclyde Royal Hospital":	
-         Number_location  = 12
-      if Number_location  == "Royal Alexandra Hospital":	
-         Number_location  = 13
-      if Number_location  == "Royal Hospital For Children":	
-         Number_location  = 14
-      if Number_location  == "Southern General Hospital":	
-         Number_location  = 15
-      if Number_location  == "Victoria Infirmary":	
-         Number_location  = 16
-      if Number_location  == "Western Infirmary":	
-         Number_location  = 17
-      if Number_location  == "Belford Hospital":	
-         Number_location  = 18
-      if Number_location  == "Caithness General Hospital":	
-         Number_location  = 19
-      if Number_location  == "Lorn & Islands Hospital":	
-         Number_location  = 20
-      if Number_location  == "Raigmore Hospital":	
-         Number_location  = 21
-      if Number_location  == "Hairmyres Hospital":	
-         Number_location  = 22
-      if Number_location  == "Monklands District General Hospital":	
-         Number_location  = 23
-      if Number_location  == "Wishaw General Hospital":	
-         Number_location  = 24
-      if Number_location  == "Royal Hospital For Sick Children (Edinburgh)":	
-         Number_location  = 25
-      if Number_location  == "Royal Infirmary Of Edinburgh At Little France":	
-         Number_location  = 26
-      if Number_location  == "St John's Hospital":	
-         Number_location  = 27
-      if Number_location  == "Balfour Hospital":	
-         Number_location  = 28
-      if Number_location  == "Gilbert Bain Hospital":	
-         Number_location  = 29
-      if Number_location  == "Ninewells Hospital":	
-         Number_location  = 30
-      if Number_location  == "Perth Royal Infirmary":	
-         Number_location  = 31
-      if Number_location  == "Western Isles Hospital":	
-         Number_location  = 32
-      if Number_location  == "NHSScotland":	
-         Number_location  = 33
-      if Number_location  == "Queen Elizabeth University Hospital":	
-         Number_location  = 34
-
-
-      return [ Attendance_de_hace_3_semanas_en_emergencias,Semana_con_fecha_de_fin_de_mes,Semana_con_holidays,Año_de_fundación,Beds,Number_location]
       
-
-sum_attendance_emergency = tf.constant([variables()+variables1()])
-prediction = model.predict(sum_attendance_emergency, steps=1)
-pred = [round(x[0]) for x in prediction]
-
-st.write("Esta es la predicción de el attendance en emergencias de la semana")
-result= st.button("predict here")
-st.header(pred)
-
-#Poner 3 graficos
+      #result= st.button("predict here")
+      st.header("Esta es la predicción de el attendance en emergencias de la semana:")
+      st.header(pred)
 
 
-# In[ ]:
 
-st.header("Evaluemos el modelo")
-st.text("Plot del modelo y de las variables reales")
 
 
 
