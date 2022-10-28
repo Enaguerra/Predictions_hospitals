@@ -1,5 +1,5 @@
 Pillow ==8.2.0
 streamlit == 1.10.0
 pandas== 1.2.4
-tensorflow ==2.3.0
+tensorflow 
 plotly == 5.9.0
