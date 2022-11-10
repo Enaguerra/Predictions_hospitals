@@ -32,11 +32,19 @@ st.set_page_config(layout="wide")
 
 header=st.container()
 dataset=st.container()
+case=st.container()
+set=st.container()
+separador_index=st.container()
+context=st.container()
 features=st.container()
 features1=st.container()
+separador0=st.container()
 features2=st.container()
 features3=st.container()
+separador=st.container()
 modelo=st.container()
+description=st.container()
+separador1=st.container()
 modelo_neurona=st.container()
 
 with header:
@@ -45,11 +53,19 @@ with header:
   img = Image.open('hospital_pills.jpg')
   st.image(img,width=700, channels='RGB',caption=None)
 
+
 with dataset:
   st.header("Attendance in emergency at Scotland hospitals dataset")
-  st.text("This a case about the attendance in emergency rooms in the hospitals of Scotland")
+  st.text("This a case about the attendance fluctuation in emergency rooms in hospitals of Scotland")
 
-  emergency_data= pd.read_csv("datos-emergencia-escocia3.csv")
+with case:
+  st.markdown(f'<h1 style="color:#8CD790;font-size:24px;">{"Part I: The Case"}</h1>', unsafe_allow_html=True)
+  st.markdown(f'<h1 style="color:#8CD790;font-size:14px;">{"The case wants to solve the problem of:"}</h1>', unsafe_allow_html=True)
+  st.text("- Identify the times of the year when activity increases")
+  st.text("- To provide evidence to improve patient care and support Scottish Government policy")
+
+with set:
+  emergency_data= pd.read_csv("Hospital_escocia_emergencias_3.csv")
   st.write(emergency_data.head())
     
   # fig = go.Figure(data=go.Table(
@@ -57,25 +73,32 @@ with dataset:
   #   fill_color="#FD8E72",
   #   align="center"),
   #   cells=dict(Values, fill_color="#E5ECF6",align="center"))
-      
 
+with separador_index:
+   st.text("                                                                            ")
+   st.text("                                                                            ")
+   st.text("                                                                            ")
+   st.text("                                                                            ")
+   st.text("                                                                            ")
 
+with context:
+   st.markdown(f'<h1 style="color:#8CD790;font-size:24px;">{"Part II: Stats"}</h1>', unsafe_allow_html=True)
+   st.markdown(f'<h1 style="color:#008080;font-size:34px;">{"Some statistical graphs that give us a little context of the assists"}</h1>', unsafe_allow_html=True)
 
 with features:
-  st.header("Attendance por año y estaciones")
-  st.text("Overview de las distribuciones por año y estaciones")
+  st.text("Overview of the distributions by year and seasons")
 
   sel_col, disp_col = st.columns(2)  
 
   with sel_col:  
-    st.subheader("Attendance en emergencias por año")
-    df = pd.read_csv("datos-emergencia-escocia3.csv",parse_dates=[0])
+    st.subheader("Attendance in emergencies per year")
+    df = pd.read_csv("Hospital_escocia_emergencias_3.csv",parse_dates=[0])
     dfsize2=df.groupby(["year"]).sum()["Sum attendance emergency"].reset_index()
     fig1 = px.bar(dfsize2, y='Sum attendance emergency',color="Sum attendance emergency",x="year",height=400)
     st.plotly_chart(fig1,use_container_width=True)
 
   with disp_col:
-    st.subheader("Attendance en emergencias por estaciones del año")
+    st.subheader("Attendance in emergencies by seasons of the year")
     dfsize3=df.groupby(["Season2"]).sum()["Sum attendance emergency"].reset_index()
     fig2 = px.pie(dfsize3.reset_index(), values='Sum attendance emergency', names='Season2')
     fig2.update_layout(margin=dict(t=1, b=130, l=0, r=0))
@@ -83,31 +106,30 @@ with features:
     st.plotly_chart(fig2)
 
 with features1:
-  st.header("Attendance por franjas de tiempo menores")
-  st.text("Overview por semanas y meses del año")
-
-  st.markdown("*Esta es una descripción más a detalle que la anterior")
+  st.text("Overview by weeks and months of the year")
 
   sel_col, disp_col = st.columns(2) 
   
   with sel_col:
-    st.subheader("Attendance por semanas del año")
+    st.subheader("Attendance by weeks of the year")
     dfsize4=df.groupby(["Week number"]).sum()["Sum attendance emergency"].reset_index()
     fig3 = px.bar(dfsize4, y='Sum attendance emergency',color="Sum attendance emergency",x="Week number",height=400)
     st.plotly_chart(fig3)
 
   with disp_col:
-    st.subheader("Attendance por meses del año")
+    st.subheader("Attendance by months of the year")
     dfsize5=df.groupby(["month"]).sum()["Sum attendance emergency"].reset_index()
     fig4 = px.bar(dfsize5, y='Sum attendance emergency',color="Sum attendance emergency",x="month",height=400)
     st.plotly_chart(fig4)
 
 
-with features2:
-  st.header("Attendance per location per year before and after COVID")
-  st.text("Overview de las attendance antes y luego del COVID")
+with separador0:
+   st.text("                                                                            ")
+   st.text("                                                                            ")
+   st.text("                                                                            ")
 
-  st.markdown("*Esta es una descripción para ver como era el flujo de capacidad en emergencias")
+with features2:
+  st.text("Overview of attendance before and after COVID")
 
   sel_col, disp_col = st.columns(2) 
 
@@ -133,34 +155,32 @@ with features2:
     
     
 with features3:
-  st.header("Animation of attendance per location per year after 2020 without NHSScotland")
-  st.text("Overview de las attendance antes del COVID")
-
-  st.markdown("*Esta es una descripción para ver como era el flujo de capacidad en emergencias")
+  st.header("Animation of attendance per location per year before 2020 without NHSScotland")
+  st.text("Overview of attendance before COVID")
       
   fig2015_animation = px.bar(top_hospitals_2015, x="Location_Name", y="Sum attendance emergency", color="Location_Name",
   animation_frame="year", animation_group="Location_Name", range_y=[1,30000],height=500, width=1000)
   st.plotly_chart(fig2015_animation)
 
     
-    
+ #####   
 
-dfdrop = df.drop(["Week_Ending_Date",'Season2', 'Diferencia atttendance', "Attendance de la semana anterior","Attendance de hace 2 semanas","Attendance de hace 3 semanas","NHS_Board_Code","NHS_Board_Name","Location_Name","Attendance","Number_Over_4_Hours","Percentage_Within_4_Hours","Number_Over_8_Hours","Percentage_Within_8_Hours","Number_Over_12_Hours","Percentage_Within_12_Hours","Location_Code","Data_Source","number location.Location_Name"], axis=1)
+dfdrop = df.drop(["Week_Ending_Date",'Season2', 'Diferencia atttendance', "Attendance de la semana anterior","Attendance de hace 2 semanas","Attendance de hace 3 semanas","NHS_Board_Code","NHS_Board_Name","Location_Name","Attendance","Number_Over_4_Hours","Percentage_Within_4_Hours","Number_Over_8_Hours","Percentage_Within_8_Hours","Number_Over_12_Hours","Percentage_Within_12_Hours","Location_Code","Data_Source","number location.Location_Name","Location name 2.Fundacion","Semana con fecha de fin de mes","Semana con holidays","Season","month","year","Location name 2.Beds"], axis=1)
 train_df = dfdrop.sample(frac=0.8, random_state=9)
 test_df = dfdrop.drop(train_df.index)
 train_labels = train_df.pop('Sum attendance emergency')
 test_labels = test_df.pop('Sum attendance emergency')
 
 model = keras.Sequential([
-layers.Dense(64, activation='relu', input_shape=[train_df.shape[1]]),
-layers.Dropout(0.3, seed=2),
+layers.Dense(80, activation='relu', input_shape=[train_df.shape[1]]),
+layers.Dropout(0.3, seed=4),
 
-layers.Dense(64, activation='swish'),
-layers.Dense(64, activation='relu'), 
-layers.Dropout(0.3, seed=2),
-layers.Dense(64, activation='swish'),
 layers.Dense(64, activation='relu'),
-layers.Dense(64, activation='swish'), 
+layers.Dense(32, activation='relu'), 
+layers.Dropout(0.3, seed=2),
+layers.Dense(16, activation='relu'),
+layers.Dense(8, activation='relu'),
+layers.Dense(6, activation='relu'), 
 
 layers.Dense(1)
 ])
@@ -172,62 +192,107 @@ optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.001)
 # metrics=['mae']
 #  )
 
+with separador:
+   st.text("                                                                            ")
+   st.text("                                                                            ")
+   st.text("                                                                            ")
+   st.text("                                                                            ")
+   st.text("                                                                            ")
+
 with modelo:
-   st.header("Arquitectura del modelo")
+   st.markdown(f'<h1 style="color:#8CD790;font-size:24px;">{"Part III: Predictions"}</h1>', unsafe_allow_html=True)
+   st.header("Architecture of the neural network model")
+   st.markdown(f'<h1 style="color:#008080;font-size:24px;">{"MAE = 39.34"}</h1>', unsafe_allow_html=True)
+   st.markdown(f'<h1 style="color:#008080;font-size:18px;">{"Acc=72.49154310960036 Err=27.50845689039964"}</h1>', unsafe_allow_html=True)
+   
+
 
    sel_col1, disp_col1 = st.columns(2)  
    with sel_col1: 
       model.summary(print_fn=st.text)
-      st.text("voy a tener 64 conexiones por cada variables de las 12 que hay 832=12x64+64 que son los sesgos, eso en la primera capa")
-      st.text("la capa dropout desactivan algunas conexiones aleatoriamente para generalizar mejor, y tenemos 0 es un parametro que no aprende ningún valor")
-      st.text("las demas capas son un 64x64+ el sesgo que es 64., que es uno por cada neurona")
-      st.text("la última capa es 65 porque e suna sola neurona de 64 variables más sus sesgo, MxN+Sesgo")
 
    with disp_col1:
       img1 = Image.open('Prediccion_y_labels.jpg')
       st.image(img1,width=800, channels='RGB',caption=None)
 
 
-
-
-new_model = keras.models.load_model('path_to_my_model.h5')
-history = pickle.load(open('training_history','rb'))    
-
-
-
-with modelo_neurona:
-   st.header("Seleccionemos las variables para predecir el attendance:")
-   with st.form('Form1'):
-         Week_number = st.slider('Week number',1,53)
-         month = st.slider('month', 1,12)
-         year = st.slider('year',2015,2022)
-         Season = st.selectbox('Season',('Winter','Spring',"Summer","Autumn"))
-         Attendance_de_la_semana_anterior_en_emergencias = st.slider('Attendance de la semana anterior en emergencias',0,11000)
-         Attendance_de_hace_2_semanas_en_emergencias = st.slider('Attendance de hace 2 semanas en emergencias',0,11000)
-         
-         if Season == 'Winter':
-            Season = 0
-         if Season == "Spring":
-            Season = 1
-         if Season == "Summer":
-            Season = 2
-         if Season == "Autumn":
-            Season = 3
-
-         #return [Week_number,month,year,Season,Attendance_de_la_semana_anterior_en_emergencias,Attendance_de_hace_2_semanas_en_emergencias]
    
-         Attendance_de_hace_3_semanas_en_emergencias = st.slider('Attendance de hace 3 semanas en emergencias',0,11000)
-         Semana_con_fecha_de_fin_de_mes = st.slider("Semana con fecha de fin de mes",0,1)
-         Semana_con_holidays = st.slider("Semana con holidays",0,1)
-         Año_de_fundación = st.slider("Año de fundación",1729,2017)
-         Beds = st.slider("Beds",34,13000)
+with description:
+      st.text("I am going to have 80 connections for each variable of the 12 that there are 1040=12x80+80 which are the biases, that in the first layer")
+      st.text("the dropout layer deactivates some connections randomly to generalize better, and if we have 0 it is a parameter that does not learn any value")
+      st.text("layer two is 64x64, plus the bias is 64, which is one for each neuron")
+      st.text("the last layer is 6 because it is a single neuron of 6 variables plus its bias, MxN+Bias")
+
+
+new_model = keras.models.load_model('path_to_my_model_1.h5')#####
+history = pickle.load(open('training_history','rb'))####    
+
+with separador1:
+   st.text("                                                                            ")
+   st.text("                                                                            ")
+   st.text("                                                                            ")
+   st.text("                                                                            ")
+   st.text("                                                                            ")
+######
+with modelo_neurona:
+   st.markdown(f'<h1 style="color:#8CD790;font-size:24px;">{"Part IV: The lab"}</h1>', unsafe_allow_html=True)
+   #st.header("Seleccionemos las variables para predecir el attendance:")
+   st.markdown(f'<h1 style="color:#008080;font-size:34px;">{"Lets select the variables to predict attendance by hospital"}</h1>', unsafe_allow_html=True)
+   sel_col2,cent_col2,disp_col2 = st.columns(3)  
+
+   with sel_col2: 
+      st.text("Aberdeen Royal Infirmary: 32-283")
+      st.text("Balfour Hospital: 0-17")
+      st.text("Belford Hospital: 0-39")
+      st.text("Borders General Hospital: 5-177")
+      st.text("Caithness General Hospital: 0-29")
+      st.text("Dr Gray's Hospital: 2-80")
+      st.text("Dumfries & Galloway Royal Infirmary: 5-169")
+      st.text("Forth Valley Royal Hospital: 15-716")
+      st.text("Galloway Community Hospital: 1-55")
+      st.text("Gilbert Bain Hospital: 0-27")
+      st.text("Glasgow Royal Infirmary	: 60-751")
+      st.text("Hairmyres Hospital: 22-640")
+
+   with cent_col2: 
+      st.text("Inverclyde Royal Hospital: 8-260")
+      st.text("Lorn & Islands Hospital: 0-17")
+      st.text("Monklands District General Hospital: 9-383")
+      st.text("NHSScotland: 631-10264")
+      st.text("Ninewells Hospital: 1-140")
+      st.text("Perth Royal Infirmary: 0-100")
+      st.text("Queen Elizabeth University Hospital: 24-1289")
+      st.text("Raigmore Hospital: 10-152")
+      st.text("Royal Aberdeen Children's Hospital: 0-17")
+      st.text("Royal Alexandra Hospital: 62-666")
+      st.text("Royal Hospital For Children: 0-393")
+      st.text("Royal Hospital For Sick Children (Edinburgh): 2-146")
+
+   with disp_col2: 
+      st.text("Royal Infirmary Of Edinburgh At Little France: 47-1504")
+      st.text("Southern General Hospital: 66-313")
+      st.text("St John's Hospital: 13-386")
+      st.text("University Hospital Ayr: 7-411")
+      st.text("University Hospital Crosshouse: 11-407")
+      st.text("Victoria Hospital: 16-310")
+      st.text("Victoria Infirmary: 91-434")
+      st.text("Western Infirmary: 95-669")
+      st.text("Western Isles Hospital: 0-9")
+      st.text("Wishaw General Hospital: 29-540")
+
+   #with location:
+      #if Number_location = st.selectbox ("Number_location",('Aberdeen Royal Infirmary', 'Balfour Hospital', 'Belford Hospital','Borders General Hospital', 'Caithness General Hospital',"Dr Gray's Hospital", 'Dumfries & Galloway Royal Infirmary','Forth Valley Royal Hospital', 'Galloway Community Hospital','Gilbert Bain Hospital', 'Glasgow Royal Infirmary','Hairmyres Hospital', 'Inverclyde Royal Hospital','Lorn & Islands Hospital', 'Monklands District General Hospital','NHSScotland', 'Ninewells Hospital', 'Perth Royal Infirmary','Queen Elizabeth University Hospital', 'Raigmore Hospital',"Royal Aberdeen Children's Hospital", 'Royal Alexandra Hospital','Royal Hospital For Children','Royal Hospital For Sick Children (Edinburgh)','Royal Infirmary Of Edinburgh At Little France','Southern General Hospital', "St John's Hospital",'University Hospital Ayr', 'University Hospital Crosshouse','Victoria Hospital', 'Victoria Infirmary', 'Western Infirmary','Western Isles Hospital', 'Wishaw General Hospital')):
+               #if Number_location == 'University Hospital Ayr':
+                  #Attendance_de_la_semana_anterior_en_emergencias = st.slider('Attendance de la semana anterior en emergencias',32,283)
+
+   with st.form('Form1'):
          Number_location = st.selectbox("Number_location",('Aberdeen Royal Infirmary', 'Balfour Hospital', 'Belford Hospital','Borders General Hospital', 'Caithness General Hospital',"Dr Gray's Hospital", 'Dumfries & Galloway Royal Infirmary','Forth Valley Royal Hospital', 'Galloway Community Hospital','Gilbert Bain Hospital', 'Glasgow Royal Infirmary','Hairmyres Hospital', 'Inverclyde Royal Hospital','Lorn & Islands Hospital', 'Monklands District General Hospital','NHSScotland', 'Ninewells Hospital', 'Perth Royal Infirmary','Queen Elizabeth University Hospital', 'Raigmore Hospital',"Royal Aberdeen Children's Hospital", 'Royal Alexandra Hospital','Royal Hospital For Children','Royal Hospital For Sick Children (Edinburgh)','Royal Infirmary Of Edinburgh At Little France','Southern General Hospital', "St John's Hospital",'University Hospital Ayr', 'University Hospital Crosshouse','Victoria Hospital', 'Victoria Infirmary', 'Western Infirmary','Western Isles Hospital', 'Wishaw General Hospital'))
 
          if Number_location == 'University Hospital Ayr':
             Number_location = 1
          if Number_location  == "University Hospital Crosshouse":
             Number_location  = 2
-         if Number_location  == "Borders General Hospital	":
+         if Number_location  == "Borders General Hospital":
             Number_location  = 3
          if Number_location  == "Dumfries & Galloway Royal Infirmary":
             Number_location  = 4
@@ -291,18 +356,39 @@ with modelo_neurona:
             Number_location  = 33
          if Number_location  == "Queen Elizabeth University Hospital":	
             Number_location  = 34
+         
+         
+         Week_number = st.slider('Week number',1,53)
+         Attendance_de_la_semana_anterior_en_emergencias = st.slider('Attendance de la semana anterior en emergencias',0,11000)
+         Attendance_de_hace_2_semanas_en_emergencias = st.slider('Attendance de hace 2 semanas en emergencias',0,11000)
+
+         #return [Week_number,month,year,Season,Attendance_de_la_semana_anterior_en_emergencias,Attendance_de_hace_2_semanas_en_emergencias]
+   
+         Attendance_de_hace_3_semanas_en_emergencias = st.slider('Attendance de hace 3 semanas en emergencias',0,11000)
+         Pandemic = st.slider("Pandemic",0,1)
+
+         #Tengo que standarizar este vector
+         vector= [Week_number,Attendance_de_la_semana_anterior_en_emergencias,Attendance_de_hace_2_semanas_en_emergencias, Attendance_de_hace_3_semanas_en_emergencias,Number_location,Pandemic]
 
          
-         vector= [Week_number,month,year,Season,Attendance_de_la_semana_anterior_en_emergencias,Attendance_de_hace_2_semanas_en_emergencias, Attendance_de_hace_3_semanas_en_emergencias,Semana_con_fecha_de_fin_de_mes,Semana_con_holidays,Año_de_fundación,Beds,Number_location]
-      
+         
+
          submitted= st.form_submit_button("Predicción")
    #sum_attendance_emergency = tf.constant([variables()+variables1()])
    
    if submitted:
       #si he rellenado el formulario ejecuta lo de lineas abajo
-      sum_attendance_emergency = tf.constant([vector])
+      vector
+      vector_mean=[27.860594,141.950019,141.288963,140.738147,17.318515,0.017217]
+      vector_std=[14.857525,574.830164,569.924359,569.448320,10.095289,0.130088]
+      product_mean = list(map(lambda x,y: x-y ,vector,vector_mean))
+      product_mean 
+      product_std = list(map(lambda x,y: x/y ,product_mean,vector_std))
+      product_std
+      sum_attendance_emergency = tf.constant([product_std])
       prediction = model.predict(sum_attendance_emergency, steps=1)
-      pred = [round(x[0]) for x in prediction]
+      prediction_final= (prediction*124.734983)+87.417309
+      pred = [round(x[0]) for x in prediction_final]
 
 
 
