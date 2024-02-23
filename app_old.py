@@ -5,9 +5,7 @@
 
 
 
-import pickle
 import streamlit as st
-import numpy as np # added
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -18,6 +16,7 @@ from tensorflow import keras
 from tensorflow.keras.models import load_model
 from tensorflow.keras import layers
 from PIL import Image
+import pickle
 st.set_page_config(layout="wide")
 
 
@@ -49,31 +48,31 @@ separador1=st.container()
 modelo_neurona=st.container()
 
 with header:
-   st.title("Welcome to the predictions lab")
-   st.text("In this lab you can costumise your graphs and see the predictions")
-   img = Image.open('hospital_pills.jpg')
-   st.image(img,width=700, channels='RGB',caption=None)
+  st.title("Welcome to the predictions lab")
+  st.text("In this lab you can costumise your graphs and see the predictions")
+  img = Image.open('hospital_pills.jpg')
+  st.image(img,width=700, channels='RGB',caption=None)
 
 
 with dataset:
-   st.header("Attendance in emergency at Scotland hospitals dataset")
-   st.text("This a case about the attendance fluctuation in emergency rooms in hospitals of Scotland")
+  st.header("Attendance in emergency at Scotland hospitals dataset")
+  st.text("This a case about the attendance fluctuation in emergency rooms in hospitals of Scotland")
 
 with case:
-   st.markdown(f'<h1 style="color:#8CD790;font-size:24px;">{"Part I: The Case"}</h1>', unsafe_allow_html=True)
-   st.markdown(f'<h1 style="color:#8CD790;font-size:14px;">{"The case wants to solve the problem of:"}</h1>', unsafe_allow_html=True)
-   st.text("- Identify the times of the year when activity increases")
-   st.text("- To provide evidence to improve patient care and support Scottish Government policy")
+  st.markdown(f'<h1 style="color:#8CD790;font-size:24px;">{"Part I: The Case"}</h1>', unsafe_allow_html=True)
+  st.markdown(f'<h1 style="color:#8CD790;font-size:14px;">{"The case wants to solve the problem of:"}</h1>', unsafe_allow_html=True)
+  st.text("- Identify the times of the year when activity increases")
+  st.text("- To provide evidence to improve patient care and support Scottish Government policy")
 
 with set:
-   emergency_data= pd.read_csv("Hospital_escocia_emergencias_3.csv")
-   st.write(emergency_data.head())
-      
-   # fig = go.Figure(data=go.Table(
-   #   header=dict(values=().columns),
-   #   fill_color="#FD8E72",
-   #   align="center"),
-   #   cells=dict(Values, fill_color="#E5ECF6",align="center"))
+  emergency_data= pd.read_csv("Hospital_escocia_emergencias_3.csv")
+  st.write(emergency_data.head())
+    
+  # fig = go.Figure(data=go.Table(
+  #   header=dict(values=().columns),
+  #   fill_color="#FD8E72",
+  #   align="center"),
+  #   cells=dict(Values, fill_color="#E5ECF6",align="center"))
 
 with separador_index:
    st.text("                                                                            ")
@@ -87,46 +86,41 @@ with context:
    st.markdown(f'<h1 style="color:#008080;font-size:34px;">{"Some statistical graphs that give us a little context of the assists"}</h1>', unsafe_allow_html=True)
 
 with features:
-   st.text("Overview of the distributions by year and seasons")
+  st.text("Overview of the distributions by year and seasons")
 
-   sel_col, disp_col = st.columns(2)  
+  sel_col, disp_col = st.columns(2)  
 
-   with sel_col:  
-      st.subheader("Attendance in emergencies per year")
-      df = pd.read_csv("Hospital_escocia_emergencias_3.csv",parse_dates=[0])
-      #numeric_columns = df.select_dtypes(include=np.number).columns.tolist() # added al final
-      dfsize2 = df.groupby(["year"], as_index=False)["Sum attendance emergency"].sum() # modified
-      # dfsize2=df.groupby(["year"]).sum()["Sum attendance emergency"].reset_index()
-      fig1 = px.bar(dfsize2, y='Sum attendance emergency',color="Sum attendance emergency",x="year",height=400)
-      st.plotly_chart(fig1,use_container_width=True)
+  with sel_col:  
+    st.subheader("Attendance in emergencies per year")
+    df = pd.read_csv("Hospital_escocia_emergencias_3.csv",parse_dates=[0])
+    dfsize2=df.groupby(["year"]).sum()["Sum attendance emergency"].reset_index()
+    fig1 = px.bar(dfsize2, y='Sum attendance emergency',color="Sum attendance emergency",x="year",height=400)
+    st.plotly_chart(fig1,use_container_width=True)
 
-   with disp_col:
-      st.subheader("Attendance in emergencies by seasons of the year")
-      dfsize3 = df.groupby(["Season2"], as_index=False)["Sum attendance emergency"].sum() # modified
-      # dfsize3=df.groupby(["Season2"]).sum()["Sum attendance emergency"].reset_index()
-      fig2 = px.pie(dfsize3.reset_index(), values='Sum attendance emergency', names='Season2')
-      fig2.update_layout(margin=dict(t=1, b=130, l=0, r=0))
-      fig2.update_traces(textposition='inside', textinfo='percent+label')
-      st.plotly_chart(fig2)
+  with disp_col:
+    st.subheader("Attendance in emergencies by seasons of the year")
+    dfsize3=df.groupby(["Season2"]).sum()["Sum attendance emergency"].reset_index()
+    fig2 = px.pie(dfsize3.reset_index(), values='Sum attendance emergency', names='Season2')
+    fig2.update_layout(margin=dict(t=1, b=130, l=0, r=0))
+    fig2.update_traces(textposition='inside', textinfo='percent+label')
+    st.plotly_chart(fig2)
 
 with features1:
-   st.text("Overview by weeks and months of the year")
+  st.text("Overview by weeks and months of the year")
 
-   sel_col, disp_col = st.columns(2) 
-   
-   with sel_col:
-      st.subheader("Attendance by weeks of the year")
-      dfsize4 = df.groupby(["Week number"], as_index=False)["Sum attendance emergency"].sum() # modified
-      # dfsize4=df.groupby(["Week number"]).sum()["Sum attendance emergency"].reset_index()
-      fig3 = px.bar(dfsize4, y='Sum attendance emergency',color="Sum attendance emergency",x="Week number",height=400)
-      st.plotly_chart(fig3)
+  sel_col, disp_col = st.columns(2) 
+  
+  with sel_col:
+    st.subheader("Attendance by weeks of the year")
+    dfsize4=df.groupby(["Week number"]).sum()["Sum attendance emergency"].reset_index()
+    fig3 = px.bar(dfsize4, y='Sum attendance emergency',color="Sum attendance emergency",x="Week number",height=400)
+    st.plotly_chart(fig3)
 
-   with disp_col:
-      st.subheader("Attendance by months of the year")
-      dfsize5 = df.groupby(["month"], as_index=False)["Sum attendance emergency"].sum() # modified
-      # dfsize5=df.groupby(["month"]).sum()["Sum attendance emergency"].reset_index()
-      fig4 = px.bar(dfsize5, y='Sum attendance emergency',color="Sum attendance emergency",x="month",height=400)
-      st.plotly_chart(fig4)
+  with disp_col:
+    st.subheader("Attendance by months of the year")
+    dfsize5=df.groupby(["month"]).sum()["Sum attendance emergency"].reset_index()
+    fig4 = px.bar(dfsize5, y='Sum attendance emergency',color="Sum attendance emergency",x="month",height=400)
+    st.plotly_chart(fig4)
 
 
 with separador0:
@@ -135,53 +129,43 @@ with separador0:
    st.text("                                                                            ")
 
 with features2:
-   st.text("Overview of attendance before and after COVID")
+  st.text("Overview of attendance before and after COVID")
 
-   sel_col, disp_col = st.columns(2) 
+  sel_col, disp_col = st.columns(2) 
 
-   with sel_col:
-      st.subheader("Attendance per location per year before 2020")
-      options = ['Aberdeen Royal Infirmary', 'Forth Valley Royal Hospital',"Glasgow Royal Infirmary","Hairmyres Hospital","Queen Elizabeth University Hospital","Royal Alexandra Hospital","Royal Infirmary Of Edinburgh At Little France","Wishaw General Hospital"]  
-      dfafter_2015 = (df['year'] > 2014) & (df['year'] < 2020)
-      filtered_df2015=df.loc[dfafter_2015]
-      dfsize2015 = filtered_df2015.groupby(["year","Location_Name"], as_index=False)["Sum attendance emergency"].sum() # modified
-      # dfsize2015=filtered_df2015.groupby(["year","Location_Name"]).sum()["Sum attendance emergency"].reset_index()
-      top_hospitals_2015 = dfsize2015.loc[dfsize2015['Location_Name'].isin(options)]
-      fig_top_hospitals_2015 = px.sunburst(top_hospitals_2015, path=['year', 'Location_Name'], values='Sum attendance emergency')
-      st.plotly_chart(fig_top_hospitals_2015)
-
-
-   with disp_col:
-      st.subheader("Attendance per location in 2020")
-      dfafter_2020 = (df['year'] > 2019) & (df['year'] < 2022)
-      filtered_df2020=df.loc[dfafter_2020]
-      dfsize2020 = filtered_df2020.groupby(["year","Location_Name"], as_index=False)["Sum attendance emergency"].sum() # modified
-      # dfsize2020=filtered_df2020.groupby(["year","Location_Name"]).sum()["Sum attendance emergency"].reset_index()
-      withoutNHS_df = dfsize2020[dfsize2020['Location_Name'] != 'NHSScotland']
-      fig_dfsize2020 = px.bar(withoutNHS_df , x='Sum attendance emergency',color="Sum attendance emergency",y="Location_Name",height=400)
-      st.plotly_chart(fig_dfsize2020)
+  with sel_col:
+    st.subheader("Attendance per location per year before 2020")
+    options = ['Aberdeen Royal Infirmary', 'Forth Valley Royal Hospital',"Glasgow Royal Infirmary","Hairmyres Hospital","Queen Elizabeth University Hospital","Royal Alexandra Hospital","Royal Infirmary Of Edinburgh At Little France","Wishaw General Hospital"]  
+    dfafter_2015 = (df['year'] > 2014) & (df['year'] < 2020)
+    filtered_df2015=df.loc[dfafter_2015]
+    dfsize2015=filtered_df2015.groupby(["year","Location_Name"]).sum()["Sum attendance emergency"].reset_index()
+    top_hospitals_2015 = dfsize2015.loc[dfsize2015['Location_Name'].isin(options)]
+    fig_top_hospitals_2015 = px.sunburst(top_hospitals_2015, path=['year', 'Location_Name'], values='Sum attendance emergency')
+    st.plotly_chart(fig_top_hospitals_2015)
 
 
-
+  with disp_col:
+    st.subheader("Attendance per location in 2020")
+    dfafter_2020 = (df['year'] > 2019) & (df['year'] < 2022)
+    filtered_df2020=df.loc[dfafter_2020] 
+    dfsize2020=filtered_df2020.groupby(["year","Location_Name"]).sum()["Sum attendance emergency"].reset_index()
+    withoutNHS_df = dfsize2020[dfsize2020['Location_Name'] != 'NHSScotland']
+    fig_dfsize2020 = px.bar(withoutNHS_df , x='Sum attendance emergency',color="Sum attendance emergency",y="Location_Name",height=400)
+    st.plotly_chart(fig_dfsize2020)
+    
+    
 with features3:
-   st.header("Animation of attendance per location per year before 2020 without NHSScotland")
-   st.text("Overview of attendance before COVID")
+  st.header("Animation of attendance per location per year before 2020 without NHSScotland")
+  st.text("Overview of attendance before COVID")
+      
+  fig2015_animation = px.bar(top_hospitals_2015, x="Location_Name", y="Sum attendance emergency", color="Location_Name",
+  animation_frame="year", animation_group="Location_Name", range_y=[1,30000],height=500, width=1000)
+  st.plotly_chart(fig2015_animation)
 
-   fig2015_animation = px.bar(top_hospitals_2015, x="Location_Name", y="Sum attendance emergency", color="Location_Name",
-   animation_frame="year", animation_group="Location_Name", range_y=[1,30000],height=500, width=1000)
-   st.plotly_chart(fig2015_animation)
+    
+ #####   
 
-
-   #####
-
-dfdrop = df.drop([
-   "Week_Ending_Date",'Season2', 'Diferencia atttendance', "Attendance de la semana anterior",
-   "Attendance de hace 2 semanas","Attendance de hace 3 semanas","NHS_Board_Code","NHS_Board_Name",
-   "Location_Name","Attendance","Number_Over_4_Hours","Percentage_Within_4_Hours",
-   "Number_Over_8_Hours","Percentage_Within_8_Hours","Number_Over_12_Hours",
-   "Percentage_Within_12_Hours","Location_Code","Data_Source","number location.Location_Name",
-   "Location name 2.Fundacion","Semana con fecha de fin de mes","Semana con holidays",
-   "Season","month","year","Location name 2.Beds"], axis=1)
+dfdrop = df.drop(["Week_Ending_Date",'Season2', 'Diferencia atttendance', "Attendance de la semana anterior","Attendance de hace 2 semanas","Attendance de hace 3 semanas","NHS_Board_Code","NHS_Board_Name","Location_Name","Attendance","Number_Over_4_Hours","Percentage_Within_4_Hours","Number_Over_8_Hours","Percentage_Within_8_Hours","Number_Over_12_Hours","Percentage_Within_12_Hours","Location_Code","Data_Source","number location.Location_Name","Location name 2.Fundacion","Semana con fecha de fin de mes","Semana con holidays","Season","month","year","Location name 2.Beds"], axis=1)
 train_df = dfdrop.sample(frac=0.8, random_state=9)
 test_df = dfdrop.drop(train_df.index)
 train_labels = train_df.pop('Sum attendance emergency')
@@ -192,18 +176,18 @@ layers.Dense(80, activation='relu', input_shape=[train_df.shape[1]]),
 layers.Dropout(0.3, seed=4),
 
 layers.Dense(64, activation='relu'),
-layers.Dense(32, activation='relu'),
+layers.Dense(32, activation='relu'), 
 layers.Dropout(0.3, seed=2),
 layers.Dense(16, activation='relu'),
 layers.Dense(8, activation='relu'),
-layers.Dense(6, activation='relu'),
+layers.Dense(6, activation='relu'), 
 
 layers.Dense(1)
 ])
-optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.001)
+optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.001) 
 
 # model.compile(
-# loss=tf.keras.losses.MeanSquaredError(),
+# loss=tf.keras.losses.MeanSquaredError(), 
 # optimizer=optimizer,
 # metrics=['mae']
 #  )
