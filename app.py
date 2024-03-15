@@ -18,6 +18,8 @@ from tensorflow import keras
 from tensorflow.keras.models import load_model
 from tensorflow.keras import layers
 from PIL import Image
+from contextlib import redirect_stdout
+import io
 st.set_page_config(layout="wide")
 
 
@@ -223,9 +225,17 @@ with modelo:
    
 
 
-   sel_col1, disp_col1 = st.columns(2)  
+
+   sel_col1, disp_col1 = st.columns(2) 
    with sel_col1: 
-      model.summary(print_fn=st.text)
+      with io.StringIO() as buf, redirect_stdout(buf):
+        model.summary()
+        summary = buf.getvalue()
+        st.write(summary)
+
+   #sel_col1, disp_col1 = st.columns(2)  
+   #with sel_col1: 
+     #model.summary(print_fn=st.text)
 
    with disp_col1:
       img1 = Image.open('Prediccion_y_labels.jpg')
