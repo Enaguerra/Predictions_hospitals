@@ -252,7 +252,8 @@ with description:
 
 #new_model = load_model('path_to_my_model_1.h5')#####
 #new_model = keras.models.load_model('path_to_my_model_1.h5')#####
-new_model = keras.models.load_model('path_to_my_model_fitting.keras')#####
+#new_model = keras.models.load_model('path_to_my_model_fitting.keras')#####
+new_model = load_model('path_to_my_model_fitting.keras')#####
 history = pickle.load(open('training_history','rb'))####    
 
 with separador1:
