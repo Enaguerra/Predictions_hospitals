@@ -250,11 +250,11 @@ with description:
       st.text("the last layer is 6 because it is a single neuron of 6 variables plus its bias, MxN+Bias")
 
 
-#new_model = load_model('path_to_my_model_1.h5')#####
+new_model = load_model('path_to_my_model_1.h5')#####
 #new_model = load_model('path.h5')#####
 #new_model = keras.models.load_model('path_to_my_model_1.h5')#####
 #new_model = keras.models.load_model('path_to_my_model_fitting.keras')#####
-new_model = load_model('path_to_my_model_fitting4.keras')#####
+#new_model = load_model('path_to_my_model_fitting4.keras')#####
 history = pickle.load(open('training_history','rb'))####    
 
 with separador1:
