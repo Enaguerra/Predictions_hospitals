@@ -257,7 +257,7 @@ with description:
 #####new_model = load_model('path_to_my_model_fitting4.keras')#####
 #history = pickle.load(open('training_history','rb'))####    
 
-st.text("Updating Newural net, Tensorflow have not realease the version for Python 3.11")
+st.text("Updating Neural net, Tensorflow have not realease the version for Python 3.11")
 
 with separador1:
    st.text("                                                                            ")
